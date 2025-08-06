@@ -119,89 +119,116 @@ function App() {
 
   // Simple calendar: just a date picker
   return (
-    <div className="App" style={{ maxWidth: 520, margin: '40px auto', padding: 32, background: '#f8fafc', borderRadius: 16, boxShadow: '0 4px 24px #0001' }}>
-      <h1 style={{ textAlign: 'center', color: '#2563eb', marginBottom: 24, letterSpacing: 1 }}>📝 To-Do List Web App</h1>
-      <div style={{ marginBottom: 24, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <label style={{ fontWeight: 500, color: '#334155', fontSize: 18 }}>
-          📅 Select Date:
-          <input
-            type="date"
-            value={selectedDate}
-            onChange={e => setSelectedDate(e.target.value)}
-            style={{ marginLeft: 12, padding: 6, borderRadius: 6, border: '1px solid #cbd5e1', fontSize: 16 }}
-          />
-        </label>
-      </div>
-      <form onSubmit={handleAddTask} style={{ marginBottom: 28, display: 'flex', gap: 8, justifyContent: 'center' }}>
-        <input
-          type="text"
-          placeholder="Task title"
-          value={newTask.title}
-          onChange={e => setNewTask({ ...newTask, title: e.target.value })}
-          required
-          style={{ padding: 8, borderRadius: 6, border: '1px solid #cbd5e1', fontSize: 16, flex: 2 }}
-        />
-        <input
-          type="text"
-          placeholder="Description (optional)"
-          value={newTask.description}
-          onChange={e => setNewTask({ ...newTask, description: e.target.value })}
-          style={{ padding: 8, borderRadius: 6, border: '1px solid #cbd5e1', fontSize: 16, flex: 3 }}
-        />
-        <button type="submit" disabled={loading} style={{ padding: '8px 18px', borderRadius: 6, background: '#2563eb', color: 'white', border: 'none', fontWeight: 600, fontSize: 16, cursor: loading ? 'not-allowed' : 'pointer', transition: 'background 0.2s' }}>Add</button>
-      </form>
-      {error && <div style={{ color: '#dc2626', marginBottom: 12, textAlign: 'center', fontWeight: 500 }}>{error}</div>}
-      {loading && <div style={{ color: '#2563eb', marginBottom: 12, textAlign: 'center' }}>Loading...</div>}
-      <h2 style={{ color: '#334155', marginBottom: 16, fontSize: 22, borderBottom: '1px solid #e5e7eb', paddingBottom: 6 }}>Tasks for {selectedDate}</h2>
-      <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
-        {tasksForDate.length === 0 && <li style={{ color: '#64748b', textAlign: 'center', fontStyle: 'italic' }}>No tasks for this date.</li>}
-        {tasksForDate.map(task => (
-          <li key={task._id} style={{
-            marginBottom: 14,
-            textDecoration: task.done ? 'line-through' : 'none',
-            display: 'flex',
-            alignItems: 'center',
-            background: task.done ? '#e0e7ef' : '#fff',
-            borderRadius: 8,
-            padding: '10px 12px',
-            boxShadow: '0 1px 4px #0001',
-            opacity: task.done ? 0.7 : 1
-          }}>
+    <div style={{
+      minHeight: '100vh',
+      width: '100vw',
+      position: 'fixed',
+      top: 0,
+      left: 0,
+      zIndex: 0,
+      background: 'linear-gradient(120deg, #a1c4fd, #c2e9fb, #fbc2eb, #fcb69f)',
+      backgroundSize: '400% 400%',
+      animation: 'gradientBG 15s ease infinite'
+    }}>
+      <style>{`
+        @keyframes gradientBG {
+          0% {background-position: 0% 50%;}
+          50% {background-position: 100% 50%;}
+          100% {background-position: 0% 50%;}
+        }
+      `}</style>
+      <div style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        minHeight: '100vh',
+        zIndex: 1
+      }}>
+        <div className="App" style={{ maxWidth: 520, width: '100%', margin: '40px auto', padding: 32, background: '#f8fafc', borderRadius: 16, boxShadow: '0 4px 24px #0001', zIndex: 2 }}>
+          <h1 style={{ textAlign: 'center', color: '#2563eb', marginBottom: 24, letterSpacing: 1 }}>📝 To-Do List Web App</h1>
+          <div style={{ marginBottom: 24, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <label style={{ fontWeight: 500, color: '#334155', fontSize: 18 }}>
+              📅 Select Date:
+              <input
+                type="date"
+                value={selectedDate}
+                onChange={e => setSelectedDate(e.target.value)}
+                style={{ marginLeft: 12, padding: 6, borderRadius: 6, border: '1px solid #cbd5e1', fontSize: 16 }}
+              />
+            </label>
+          </div>
+          <form onSubmit={handleAddTask} style={{ marginBottom: 28, display: 'flex', gap: 8, justifyContent: 'center' }}>
             <input
-              type="checkbox"
-              checked={task.done}
-              onChange={() => handleDone(task._id)}
-              disabled={task.done || loading}
-              style={{ marginRight: 12, width: 18, height: 18 }}
+              type="text"
+              placeholder="Task title"
+              value={newTask.title}
+              onChange={e => setNewTask({ ...newTask, title: e.target.value })}
+              required
+              style={{ padding: 8, borderRadius: 6, border: '1px solid #cbd5e1', fontSize: 16, flex: 2 }}
             />
-            {editTaskId === task._id ? (
-              <>
+            <input
+              type="text"
+              placeholder="Description (optional)"
+              value={newTask.description}
+              onChange={e => setNewTask({ ...newTask, description: e.target.value })}
+              style={{ padding: 8, borderRadius: 6, border: '1px solid #cbd5e1', fontSize: 16, flex: 3 }}
+            />
+            <button type="submit" disabled={loading} style={{ padding: '8px 18px', borderRadius: 6, background: '#2563eb', color: 'white', border: 'none', fontWeight: 600, fontSize: 16, cursor: loading ? 'not-allowed' : 'pointer', transition: 'background 0.2s' }}>Add</button>
+          </form>
+          {error && <div style={{ color: '#dc2626', marginBottom: 12, textAlign: 'center', fontWeight: 500 }}>{error}</div>}
+          {loading && <div style={{ color: '#2563eb', marginBottom: 12, textAlign: 'center' }}>Loading...</div>}
+          <h2 style={{ color: '#334155', marginBottom: 16, fontSize: 22, borderBottom: '1px solid #e5e7eb', paddingBottom: 6 }}>Tasks for {selectedDate}</h2>
+          <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+            {tasksForDate.length === 0 && <li style={{ color: '#64748b', textAlign: 'center', fontStyle: 'italic' }}>No tasks for this date.</li>}
+            {tasksForDate.map(task => (
+              <li key={task._id} style={{
+                marginBottom: 14,
+                textDecoration: task.done ? 'line-through' : 'none',
+                display: 'flex',
+                alignItems: 'center',
+                background: task.done ? '#e0e7ef' : '#fff',
+                borderRadius: 8,
+                padding: '10px 12px',
+                boxShadow: '0 1px 4px #0001',
+                opacity: task.done ? 0.7 : 1
+              }}>
                 <input
-                  type="text"
-                  value={editTask.title}
-                  onChange={e => setEditTask({ ...editTask, title: e.target.value })}
-                  style={{ marginRight: 8, padding: 6, borderRadius: 5, border: '1px solid #cbd5e1', fontSize: 15 }}
+                  type="checkbox"
+                  checked={task.done}
+                  onChange={() => handleDone(task._id)}
+                  disabled={task.done || loading}
+                  style={{ marginRight: 12, width: 18, height: 18 }}
                 />
-                <input
-                  type="text"
-                  value={editTask.description}
-                  onChange={e => setEditTask({ ...editTask, description: e.target.value })}
-                  style={{ marginRight: 8, padding: 6, borderRadius: 5, border: '1px solid #cbd5e1', fontSize: 15 }}
-                />
-                <button onClick={() => handleEditSave(task._id)} disabled={loading} style={{ padding: '6px 12px', borderRadius: 5, background: '#059669', color: 'white', border: 'none', fontWeight: 500, fontSize: 15, marginRight: 4, cursor: loading ? 'not-allowed' : 'pointer' }}>Save</button>
-                <button onClick={handleEditCancel} style={{ padding: '6px 12px', borderRadius: 5, background: '#e11d48', color: 'white', border: 'none', fontWeight: 500, fontSize: 15, cursor: loading ? 'not-allowed' : 'pointer' }} disabled={loading}>Cancel</button>
-              </>
-            ) : (
-              <>
-                <span style={{ fontWeight: 600, color: '#0f172a', fontSize: 17 }}>{task.title}</span>
-                {task.description && <span style={{ color: '#64748b', marginLeft: 6, fontSize: 15 }}> - {task.description}</span>}
-                <button onClick={() => startEdit(task)} style={{ marginLeft: 12, padding: '6px 12px', borderRadius: 5, background: '#fbbf24', color: '#78350f', border: 'none', fontWeight: 500, fontSize: 15, cursor: task.done || loading ? 'not-allowed' : 'pointer' }} disabled={task.done || loading}>Edit</button>
-                <button onClick={() => handleDelete(task._id)} style={{ marginLeft: 6, padding: '6px 12px', borderRadius: 5, background: '#ef4444', color: 'white', border: 'none', fontWeight: 500, fontSize: 15, cursor: loading ? 'not-allowed' : 'pointer' }} disabled={loading}>Delete</button>
-              </>
-            )}
-          </li>
-        ))}
-      </ul>
+                {editTaskId === task._id ? (
+                  <>
+                    <input
+                      type="text"
+                      value={editTask.title}
+                      onChange={e => setEditTask({ ...editTask, title: e.target.value })}
+                      style={{ marginRight: 8, padding: 6, borderRadius: 5, border: '1px solid #cbd5e1', fontSize: 15 }}
+                    />
+                    <input
+                      type="text"
+                      value={editTask.description}
+                      onChange={e => setEditTask({ ...editTask, description: e.target.value })}
+                      style={{ marginRight: 8, padding: 6, borderRadius: 5, border: '1px solid #cbd5e1', fontSize: 15 }}
+                    />
+                    <button onClick={() => handleEditSave(task._id)} disabled={loading} style={{ padding: '6px 12px', borderRadius: 5, background: '#059669', color: 'white', border: 'none', fontWeight: 500, fontSize: 15, marginRight: 4, cursor: loading ? 'not-allowed' : 'pointer' }}>Save</button>
+                    <button onClick={handleEditCancel} style={{ padding: '6px 12px', borderRadius: 5, background: '#e11d48', color: 'white', border: 'none', fontWeight: 500, fontSize: 15, cursor: loading ? 'not-allowed' : 'pointer' }} disabled={loading}>Cancel</button>
+                  </>
+                ) : (
+                  <>
+                    <span style={{ fontWeight: 600, color: '#0f172a', fontSize: 17 }}>{task.title}</span>
+                    {task.description && <span style={{ color: '#64748b', marginLeft: 6, fontSize: 15 }}> - {task.description}</span>}
+                    <button onClick={() => startEdit(task)} style={{ marginLeft: 12, padding: '6px 12px', borderRadius: 5, background: '#fbbf24', color: '#78350f', border: 'none', fontWeight: 500, fontSize: 15, cursor: task.done || loading ? 'not-allowed' : 'pointer' }} disabled={task.done || loading}>Edit</button>
+                    <button onClick={() => handleDelete(task._id)} style={{ marginLeft: 6, padding: '6px 12px', borderRadius: 5, background: '#ef4444', color: 'white', border: 'none', fontWeight: 500, fontSize: 15, cursor: loading ? 'not-allowed' : 'pointer' }} disabled={loading}>Delete</button>
+                  </>
+                )}
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
     </div>
   );
 }
